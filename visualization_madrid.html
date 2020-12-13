@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html>
+<!--The head section is the title, styling rules, link to other sources and other meta fields -->
+<head>
+    <!--this line defines the encoding type of the web document-->
+    <meta charset='utf-8' />
+    <!--this defines the title of the web page-->
+    <title>Urban Forestry | Madrid</title>
+    <!--this line controls how our map is displayed in a mobile browser-->
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <!--this two lines import our map from mapbox (first one javascript code and second css stylesheet-->
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.css' rel='stylesheet' />
+
+    <!--here we define the style of our document using css rules-->
+    <style>
+
+        /*this defines the style of the body (ex. font style, font size, etc*/
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+            font-size: 14px;
+        }
+        
+        /*this defines the style of the map*/
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+
+        /*this defines the style spacing of the text legend panel*/
+        li {
+            padding: 3px
+        }
+
+        /*this defines the style for the legend panel features that will be called underneath in the body*/
+        #panel {
+            background: rgba(0,0,0,0.5);
+            width: 310px;
+            border: 1px solid rgba(0,0,0,0.05);
+            position: absolute;
+            right: 16px;
+            top: 16px;
+            box-shadow: 0 0 4px 0 rgba(0,0,0,0.1); 
+            color: rgba(255,255,255,0.9); /*this changes the text color*/
+        }
+
+        #legend {
+            background: rgba(0,0,0,0.5);
+            width: 310px;
+            height: 260px;
+            border: 1px solid rgba(0,0,0,0.05);
+            position: absolute;
+            right: 0px;
+            top: 200px;
+            box-shadow: 0 0 4px 0 rgba(0,0,0,0.1); 
+            color: rgba(255,255,255,0.9); /*this changes the text color*/
+        }
+        
+        /*this defines the style of the legend title*/
+        h4 {
+            /*text-transform: lowercase;*/
+            border-bottom: 1px solid rgba(255,255,255,0.07); /*this changes the line color*/
+            margin:0;
+            padding: 16px;
+        }
+
+        /*this defines the spacing style for each legend text bullets*/
+        ul {
+            list-style-type: none; /*this line turns off the existing bullets*/
+            margin: 0;
+            padding: 16px;
+        }
+
+        /*this defines the style and shape of the legend text bullets*/
+        ul span {
+            width: 10px; /*width of bullet*/
+            height: 10px; /*height of bullet*/
+            display: inline-block; /*this is the bullet as a little square*/
+            margin-right: 8px; /*this sets the space beetween text and bullet*/
+            border-radius: 50%; /*this makes the bullet as a circle*/
+        }
+        
+        /*I can find dd using the developer tools -> elements -> body -> div class -> div class -> dl -> dd */
+        /*this block defines the visual style of the pop up window that appears when I click on one of the restaurants */
+        dd {
+            margin-left : 0; /*this defines the left justification*/
+            
+            margin-bottom : 8px; /*this defines the space from the bottom*/ 
+            font-weight : bold; /*this defines the text weight*/ 
+            color:white;
+        }
+
+        
+
+
+        /*This block defines the text style and size of popup windows that appears when I click on a region*/
+        .mapboxgl-popup-content{
+            font-size: 14px;
+            
+            box-shadow: 0 0 4px 0; 
+            min-width: 260px;
+            max-height: 260px;
+            min-height: 260px;
+            box-shadow: 0 0 4px 0 rgba(0,0,0,0.1); 
+            color: rgb(134, 134, 134);
+            background: rgba(0,0,0,0.9);
+            border-radius: 10px;
+        }
+
+        #popup {
+            width: 300px;
+            height: 250px;
+        }
+
+        .popup-name {
+            margin-bottom: 8px;
+            width: 180px;
+        }
+
+        .popup-inner {
+            position: relative;
+            top: -130px;
+            right: -170px;
+            width: 150px;
+            
+        }
+
+        .popup-list {
+            position: relative;
+            height: 80px;
+            width: 50px;
+            
+            top: 32px;
+            left: 20px;
+            list-style-type: none;
+            background: rgba(0, 0, 0, 0);
+            transform: rotate(90deg);       
+        }
+
+        .popup-graph-title {
+            position: absolute;
+            color: #747474;
+        }
+
+        .popup-listItem1 {
+            position: absolute;
+            bottom: 15px;
+            left: -62px;          
+            height: 60px;
+            width: 10px;           
+            background: rgba(0, 0, 0, 0);
+        }
+
+        .popup-listItem2 {
+            position: absolute;
+            bottom: 15px;
+            left: -42px;            
+            height: 60px;
+            width: 10px;
+            background: rgba(0, 0, 0, 0);            
+        }
+        
+        .popup-listItem3 {
+            position: absolute;
+            bottom: 15px;
+            left: -22px;         
+            height: 60px;
+            width: 10px;
+            background: rgba(0, 0, 0, 0);          
+        }
+
+        .popup-listItem4 {
+            position: absolute;
+            bottom: 15px;
+            left: -2px;         
+            height: 60px;
+            width: 10px;
+            background: rgba(0, 0, 0, 0);          
+        }
+
+        .popup-listItem5 {
+            position: absolute;
+            bottom: 15px;
+            left: 18px;         
+            height: 60px;
+            width: 10px;
+            background: rgba(0, 0, 0, 0);          
+        }
+
+        .popup-listItem6 {
+            position: absolute;
+            bottom: 15px;
+            left: 38px;         
+            height: 60px;
+            width: 10px;
+            background: rgba(0, 0, 0, 0);          
+        }
+
+        .popup-listItem7 {
+            position: absolute;
+            bottom: 15px;
+            left: 58px;         
+            height: 60px;
+            width: 10px;
+            background: rgba(0, 0, 0, 0);          
+        }
+
+        .popup-listBar {
+            height: 80px;
+            width: 8px;
+            display: flex;
+            flex-direction: column;
+            transform: rotate(90deg); 
+        }
+
+        .popup-listBar2 {
+            height: 80px;
+            width: 8px;
+            display: flex;
+            flex-direction: column;
+            transform: rotate(90deg); 
+        }
+
+        .popup-listBar3 {
+            height: 80px;
+            width: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            transform: rotate(90deg);       
+        }
+
+        .popup-listBar4 {
+            height: 80px;
+            width: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            transform: rotate(90deg);       
+        }
+
+        .popup-listBar5 {
+            height: 80px;
+            width: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            transform: rotate(90deg);       
+        }
+
+        .popup-listBar6 {
+            height: 80px;
+            width: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            transform: rotate(90deg);       
+        }
+
+        .popup-listBar7 {
+            height: 80px;
+            width: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            transform: rotate(90deg);       
+        }
+
+        .popup-listBar span {
+            position: fixed;
+            bottom: 41px;
+            left: 60px;
+            height:10%;
+            width: 100%;
+            background: #3fd68e;
+            border-radius: 25px;
+            transform: rotate(270deg);
+            transform-origin: bottom center;        
+        }
+
+        .popup-listBar2 span {
+            position: fixed;
+            bottom: 41px;
+            left: 60px;
+            width: 100%;
+            background: #3fd68e;
+            border-radius: 25px;
+            transform: rotate(270deg);
+            transform-origin: bottom center;
+        }
+
+        .popup-listBar3 span {
+            position: fixed;
+            bottom: 41px;
+            left: 60px;
+            width: 100%;
+            background: #3fd68e;
+            border-radius: 25px;
+            transform: rotate(270deg);
+            transform-origin: bottom center;
+        }
+
+        .popup-listBar4 span {
+            position: fixed;
+            bottom: 41px;
+            left: 60px;
+            width: 100%;
+            background: #3fd68e;
+            border-radius: 25px;
+            transform: rotate(270deg);
+            transform-origin: bottom center;
+        }
+
+        .popup-listBar5 span {
+            position: fixed;
+            bottom: 41px;
+            left: 60px;
+            width: 100%;
+            background: #3fd68e;
+            border-radius: 25px;
+            transform: rotate(270deg);
+            transform-origin: bottom center;
+        }
+
+        .popup-listBar6 span {
+            position: fixed;
+            bottom: 41px;
+            left: 60px;
+            width: 100%;
+            background: #3fd68e;
+            border-radius: 25px;
+            transform: rotate(270deg);
+            transform-origin: bottom center;
+        }
+
+        .popup-listBar7 span {
+            position: fixed;
+            bottom: 41px;
+            left: 60px;
+            width: 100%;
+            background: #3fd68e;
+            border-radius: 25px;
+            transform: rotate(270deg);
+            transform-origin: bottom center;
+        }
+
+        /*This block defines the bottom margin of the text inside the popup window*/
+        dl{
+            margin-bottom: 0;
+        }
+
+    </style>
+</head>
+
+<!--The body section contains all the visible elements of the page (ex. map, legend and other elements user interface) -->
+<body>
+    <!--this line is the map-->
+    <div id='map'></div>
+    <div id='panel'>
+        <!--legend title-->
+        <h4>Environmental Discomfort Level</h4>
+        <ul>
+            <!--elements of the legend-->
+            <!--the span elements create the bullets in front of the text (the bullets features are defined above in the css rules in span-->
+            <li><span style='background: #ac0202;'></span>Very High</li> 
+            <li><span style='background: #ff4747;'></span>Moderately High</li> 
+            <li><span style='background: #ff9999;'></span>Medium</li> 
+            <li><span style='background: #48f5fe;'></span>Moderately Low</li> 
+            <li><span style='background: #006666;'></span>Very Low</li> 
+        </ul>
+
+        <div id='legend'>
+            <!--legend title-->
+            <h4>Units Legend</h4>
+            <ul>
+                <!--elements of the legend-->
+                <!--the span elements create the bullets in front of the text (the bullets features are defined above in the css rules in span-->
+                <li>Carbon Monoxide | mg/m<sup>3</li> 
+                <li>Noise Pollution | decibel</li> 
+                <li>Particulate Matter | µg/m<sup>3<li> 
+                <li>Rainfall | l/m<sup>2</li> 
+                <li>Solar Radiation | W/m<sup>2</li>
+                <li>Temperature | ºC</li>
+                <li>Trees Density | trees/km<sup>2</li>
+                
+            </ul>
+
+
+
+
+
+
+
+
+    </div>
+
+    <!--Here between the script marks there is all the javascript code that control the user interaction-->
+    <script>
+
+        mapboxgl.accessToken = 'pk.eyJ1IjoiaWFjb3BvLWRzIiwiYSI6ImNrMzJ1NHBtdzA1b3YzbW55ZTJhbzZtdmgifQ.RcWjOUEo4i7LnQDcbhcPWQ'; // key used to make the link public on github
+        var map = new mapboxgl.Map({
+            container: 'map', // container id
+            style: 'mapbox://styles/iacopo-ds/ckifyeijo1c1h1ao7ymme4ew5', // this is the map I created in mapbox
+            center: [-3.696, 40.435], // starting position [lng, lat]
+            zoom: 10, // starting zoom
+            minZoom: 10,
+            maxZoom: 18
+        });
+        
+        /*This block defines the map navigator on the top left of the map*/
+        var nav = new mapboxgl.NavigationControl();
+        map.addControl(nav, 'top-left');
+        
+        /*This block makes the mouse change when it is above something that is possible to query*/
+        map.on('mousemove', function (event) {
+            if (map.loaded()) {
+                var features = map.queryRenderedFeatures(event.point, {
+                    layers: ['indexmadrid'] /*this is the layer name in the mapbox map */
+                });
+                /*This line is an if statement, ? equals if and : equals else*/
+                map.getCanvas().style.cursor = features.length ? 'pointer' : '';
+            }
+        });
+        
+        /*this block defines the mouse click */
+        map.on('click', function (event) {
+            var geometry = event.point;
+            var parameters = {
+                layers : ['indexmadrid'] /*this is the layer name in the mapbox map */
+            };
+            var features = map.queryRenderedFeatures(geometry, parameters);
+            var lot = features[0];
+            console.log(lot);
+
+            /*This if statement is useful to avoid errors in case of clicks where there are no data*/
+            if (features.length>0) {
+                /*these lines select the properties I want to show in the pop up window*/
+                // correggere --> var urbanZone = lot.properties.codzu|| '—';
+                var neighborhood = lot.properties.name_barrios || '—';
+                var carbon_monoxide = lot.properties.carbon_monoxide || '—';
+                var carbon_monoxide_units = lot.properties.co_units || '—';
+                var noise_pollution = lot.properties.noise_pollution || '—';
+                var noise_pollution_units = lot.properties.noise_units || '—';
+                var particulate_matter = lot.properties.pm_10 || '—';
+                var particulate_matter_units = lot.properties.pm_units || '—';
+                var rainfall = lot.properties.rainfall || '—';
+                var rainfall_units = lot.properties.rain_units || '—';
+                var solar_radiation = lot.properties.solar_radiation || '—';
+                var solar_radiation_units = lot.properties.solar_units || '—';
+                var temperature = lot.properties.temperature || '—';
+                var temperature_units = lot.properties.temp_units || '—';
+                var trees_density = lot.properties.trees_density || '—';
+                var trees_density_units = lot.properties.trees_units || '—';
+                var edi = lot.properties.mpi_index || '—';
+              
+ 
+                console.log(neighborhood);
+
+                /*this creates the pop up (look at mapbox GL JS API for more information) */
+                var popup = new mapboxgl.Popup()
+                    .setLngLat(event.lngLat) /*this is the mouse location */
+                    .setHTML(
+                                               
+                            '<div id="popup"  style="display: block;">' +
+                                '<div class="popup-name">' +
+                                    '<span>' + 
+                                        '<dt>Neighborhood :</dt>' +
+                                        '<dd>' + neighborhood + '</dd>' +
+                                        '<dt>Environmental Discomfort Index (2019) :</dt>' +
+                                        '<dd>' + edi + '</dd>' +
+                                        '<dt>carbon monoxide : '+ carbon_monoxide_units + '</dt>' +
+                                        '<dt>noise pollution : '+ noise_pollution_units + '</dt>' +
+                                        '<dt>pm 10 : '+ particulate_matter_units + '</dt>' +
+                                        '<dt>rainfall : '+ rainfall_units + '</dt>' +
+                                        '<dt>solar radiation : '+ solar_radiation_units + '</dt>' +
+                                        '<dt>temperature :' + temperature_units + '</dt>' +
+                                        '<dt>trees density : '+ trees_density_units + '</dt>' +
+                                    '</span>' +                                
+                                '</div>' +
+
+                                '<div class="popup-inner">' +
+                                    '<ul class="popup-list">' +
+                                        '<li class="popup-listItem1">' +
+                                            '<div class="popup-listBar">' +
+                                                '<span style="height:' + carbon_monoxide + '%;">' + 
+                                                '</span>' +
+                                            '</div>' +
+                                        '</li>'+
+
+                                        '<li class="popup-listItem2">' +
+                                            '<div class="popup-listBar2">' +
+                                                '<span style="height:' + noise_pollution + '%;">' + 
+                                                '</span>' +
+                                            '</div>' +
+                                        '</li>'+
+
+                                        '<li class="popup-listItem3">' +
+                                            '<div class="popup-listBar3">' +
+                                                '<span style="height:' + particulate_matter + '%;">' + 
+                                                '</span>' +
+                                            '</div>' +
+                                        '</li>'+
+
+                                        '<li class="popup-listItem4">' +
+                                            '<div class="popup-listBar3">' +
+                                                '<span style="height:' + rainfall + '%;">' + 
+                                                '</span>' +
+                                            '</div>' +
+                                        '</li>'+
+
+                                        '<li class="popup-listItem5">' +
+                                            '<div class="popup-listBar3">' +
+                                                '<span style="height:' + solar_radiation + '%;">' + 
+                                                '</span>' +
+                                            '</div>' +
+                                        '</li>'+
+
+                                        '<li class="popup-listItem6">' +
+                                            '<div class="popup-listBar3">' +
+                                                '<span style="height:' + temperature + '%;">' + 
+                                                '</span>' +
+                                            '</div>' +
+                                        '</li>'+
+
+                                        '<li class="popup-listItem7">' +
+                                            '<div class="popup-listBar3">' +
+                                                '<span style="height:' + trees_density + '%;">' + 
+                                                '</span>' +
+                                            '</div>' +
+                                        '</li>'+
+
+
+
+
+                                    '</ul>' +
+                                '</div>' +
+                            
+
+                            '</div>' 
+
+                            )
+
+                    .addTo(map); /*this line adds the pop up to the map */
+            }
+        });
+    </script>
+
+</body>
+</html>
