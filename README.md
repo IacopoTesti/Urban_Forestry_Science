@@ -9,3 +9,6 @@ The proposal firstly identifies neighboorhoods in Madrid with the highest enviro
 
 ##### Methodology 
 The project strongly relies on robust statistical and mathematical approaches. The datasets are selected from the competition site as well as the Madrid open data portal. Therefore all datasets represent a verified probabilistic sample. All puctual data retrieved by monitoring stations (temperature, solar radiation, particulate matter, etc..) are homogenized performing an interpolation in quantum gis (repository here) to achieve a neighborhood detail. After selection, the datasets are normalized and aggregated using a statistical composite indicator [3], that sintethises the environmental discomfort of each district. Finally granular spatial analysis are conducted to spot optimal locations to plant trees.
+
+Find Madrid cartography here https://iacopotesti.github.io/Urban_Forestry_Science/
+![](Images/Madrid.PNG)
