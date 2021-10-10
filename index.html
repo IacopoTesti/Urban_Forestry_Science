@@ -110,6 +110,24 @@
             background: rgba(0,0,0,0.9);
             border-radius: 10px;
         }
+        
+        /*This block defines tip color (small triangle when clicking)*/
+        .mapboxgl-popup-anchor-top .mapboxgl-popup-tip,
+        .mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip,
+        .mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip {
+            border-bottom-color: rgba(26, 26, 26, 0.822);
+            }
+        .mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip,
+        .mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip,
+        .mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip {
+            border-top-color: rgba(26, 26, 26, 0.822);
+            }
+        .mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
+            border-right-color: rgba(26, 26, 26, 0.822);
+            }
+        .mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
+            border-left-color: rgba(26, 26, 26, 0.822);
+            }
 
         #popup {
             width: 300px;
